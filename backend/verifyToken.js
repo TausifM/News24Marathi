@@ -4,7 +4,7 @@ function verify(req, res, next) {
   const authHeader = req.headers.token;
   if (authHeader) {
     const token = authHeader.split(" ")[1];
-    jwt.verify(token, process.env.SERCRET, (err, user) => {
+    jwt.verify(token, process.env.SECRET, (err, user) => {
       if (err) {
         res.status(401).json({ message: "Invalid Token" });
       } else {
