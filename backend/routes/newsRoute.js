@@ -14,7 +14,7 @@ router.post("/", verify, async (req, res, next) => {
       res.status(500).json(err);
     }
   } else {
-    res.status(401).json({ message: "Youare not allowed" });
+    res.status(401).json({ message: "You are not allowed" });
   }
 });
 
@@ -55,7 +55,7 @@ router.delete("/:id", verify, async (req, res) => {
       res.status(500).jsōn(error);
     }
   } else {
-    res.status(403).json("You are noyt allowed");
+    res.status(403).json("You are not allowed");
   }
 });
 // Get random
