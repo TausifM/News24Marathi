@@ -1,85 +1,95 @@
 const router = require("express").Router();
-const res = require("express/lib/response");
-const News = require("../models/newsModel");
+const Movie = require("../models/newsModel");
 const verify = require("../verifyToken");
 
-//Create News
-router.post("/", verify, async (req, res, next) => {
+//CREATE
+
+router.post("/", verify, async (req, res) => {
   if (req.user.isAdmin) {
-    const newNews = new News(req.body);
+    const newMovie = new Movie(req.body);
     try {
-      const savedNews = await newNews.save();
-      res.status(201).json(savedNews);
+      const savedMovie = await newMovie.save();
+      res.status(201).json(savedMovie);
     } catch (err) {
       res.status(500).json(err);
     }
   } else {
-    res.status(401).json({ message: "You are not allowed" });
+    res.status(403).json("You are not allowed!");
   }
 });
 
-// Get
-router.get("/find/:id", verify, async (req, res) => {
-  try {
-    await News.findById(req.params.id);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
+//UPDATE
 
-// Update
 router.put("/:id", verify, async (req, res) => {
   if (req.user.isAdmin) {
     try {
-      const updatedNews = await News.findByIdAndDelete(
+      const updatedMovie = await Movie.findByIdAndUpdate(
         req.params.id,
-        { $set: req.body },
+        {
+          $set: req.body,
+        },
         { new: true }
       );
-      res.status(200).json(updatedNews);
-    } catch (error) {
-      res.status(500).json(error);
+      res.status(200).json(updatedMovie);
+    } catch (err) {
+      res.status(500).json(err);
     }
   } else {
-    res.status(403).json("You are not allowed ");
+    res.status(403).json("You are not allowed!");
   }
 });
 
-// Delete
+//DELETE
+
 router.delete("/:id", verify, async (req, res) => {
   if (req.user.isAdmin) {
     try {
-      await News.findByIdAndDelete(req.params.id);
-      res.status(200).json("News deleted successfully");
-    } catch (error) {
-      res.status(500).jsōn(error);
+      await Movie.findByIdAndDelete(req.params.id);
+      res.status(200).json("The movie has been deleted...");
+    } catch (err) {
+      res.status(500).json(err);
     }
   } else {
-    res.status(403).json("You are not allowed");
+    res.status(403).json("You are not allowed!");
   }
 });
-// Get random
+
+//GET
+
 router.get("/find/:id", verify, async (req, res) => {
+  try {
+    const movie = await Movie.findById(req.params.id);
+    res.status(200).json(movie);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//GET RANDOM
+
+router.get("/random", verify, async (req, res) => {
   const type = req.query.type;
   let movie;
   try {
     if (type === "series") {
-      movie = await News.aggregate([
+      movie = await Movie.aggregate([
         { $match: { isSeries: true } },
         { $sample: { size: 1 } },
       ]);
     } else {
-      movie = await News.aggregate([
+      movie = await Movie.aggregate([
         { $match: { isSeries: false } },
         { $sample: { size: 1 } },
       ]);
     }
     res.status(200).json(movie);
-  } catch (error) {
-    res.status(500).json(error);
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
-// Get All
+
+//GET ALL
+
 router.get("/", verify, async (req, res) => {
   if (req.user.isAdmin) {
     try {
@@ -92,4 +102,5 @@ router.get("/", verify, async (req, res) => {
     res.status(403).json("You are not allowed!");
   }
 });
+
 module.exports = router;

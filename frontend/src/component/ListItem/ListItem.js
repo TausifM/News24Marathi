@@ -1,4 +1,3 @@
-import Container from "../../template/Container";
 import "./ListItem.scss";
 import {
   PlayArrow,
@@ -31,7 +30,7 @@ const ListItem = ({ index, item }) => {
 
   return (
     <Link to={{ pathname: "/watch", movie: movie }}>
-      <Container
+      <div
         className="listItem"
         style={{ left: isHovered && index * 225 - 50 + index * 2.5 }}
         onMouseEnter={() => setIsHovered(true)}
@@ -58,7 +57,7 @@ const ListItem = ({ index, item }) => {
             </div>
           </>
         )}
-      </Container>
+      </div>
     </Link>
   );
 };
